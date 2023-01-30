@@ -33,6 +33,8 @@ namespace bibliochat.RecursosBot.Services
         public IStoreRepositori StoreRepositori => new StoreRepository(baseUrl);
 
         public ISemilleroRepositori SemilleroRepositori => new SemilleroRepository(baseUrlSemillero);
+
+        public IConfigRepositori ConfigRepositori => new ConfigOperador(baseUrl);
         ////static string url = "http://localhost:38906/api/frace/Listar";
 
         ////public Dataservices()

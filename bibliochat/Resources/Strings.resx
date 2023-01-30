@@ -136,7 +136,7 @@
     <value>Ok ,"{0}" esta listo para recibir solicitudes.</value>
   </data>
   <data name="AggregationChannelRemoved" xml:space="preserve">
-    <value>"{}" ya no recibirá solicitudes.</value>
+    <value>"{0}" ya no recibirá solicitudes.</value>
   </data>
   <data name="AggregationChannelSet" xml:space="preserve">
     <value>Este canal/conversación es ahora donde se agregan las solicitudes</value>
@@ -184,7 +184,7 @@
     <value>Eliminar todos los datos ...</value>
   </data>
   <data name="DeletingAllDataWithCommandIssuer" xml:space="preserve">
-    <value>Eliminando todos los datos solicitados por "0"...</value>
+    <value>Eliminando todos los datos solicitados por "{0}"...</value>
   </data>
   <data name="EchoMessage" xml:space="preserve">
     <value>Tú dijiste: {0}</value>
@@ -298,7 +298,7 @@
     <value>Se realizó la solicitud, pero faltan los datos del solicitante</value>
   </data>
   <data name="RequestorDetailsTitle" xml:space="preserve">
-    <value>Solicitado por el usuario "{0}" en el canal "{1}"</value>
+    <value>Solicitado por:-{0}</value>
   </data>
   <data name="UserDataDeleted" xml:space="preserve">
     <value>Datos del usuario "{0}" eliminados</value>

@@ -48,4 +48,8 @@ namespace bibliochat.Services.BotConfig
     }
     public interface ISemilleroRepositori : ISemillero<SetsModels> { }
 
+    public interface IConfig<T> where T : new() {
+        Task<T> GetDisponibilidad(string token);
+    }
+    public interface IConfigRepositori: IConfig<ConfiguracionEntity> { }
 }

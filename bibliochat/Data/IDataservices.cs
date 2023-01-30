@@ -13,5 +13,6 @@ namespace bibliochat.Services.BotConfig
         IClienteRepositori ClienteRepositori { get; }
         IStoreRepositori StoreRepositori { get; }
         ISemilleroRepositori SemilleroRepositori { get; }
+        IConfigRepositori ConfigRepositori { get ; }
     }
 }

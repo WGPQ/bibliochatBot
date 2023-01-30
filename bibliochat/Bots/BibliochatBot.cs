@@ -38,7 +38,9 @@ namespace bibliochat.Bots
         public static string dataBot = "dataBot";
         public static string dataUser = "dataUser";
         public static string chatSession = "chatSession";
+        public static string disponibilidaKey = "disponibilidad";
         private readonly IStatePropertyAccessor<AuthStateModel> _authClientState;
+        public readonly IStatePropertyAccessor<DisponibilidadModel> _disponibilidadState;
         public readonly IStatePropertyAccessor<AuthStateModel> _authBotState;
         private readonly IStatePropertyAccessor<UserVerificadoEntity> _dataUserState;
         private readonly IStatePropertyAccessor<UserVerificadoEntity> _dataBotState;
@@ -46,12 +48,13 @@ namespace bibliochat.Bots
         private const string SampleUrl = "https://github.com/tompaana/intermediator-bot-sample";
 
 
-        public BibliochatBot(ConversationState conversationState, UserState userState, UserState botState, UserState dataUserState, UserState dataBotState, UserState clientState, UserState chatState, T dialog, IDataservices dataservices, IStore store)
+        public BibliochatBot(ConversationState conversationState, UserState userState, UserState disponibilidad, UserState botState, UserState dataUserState, UserState dataBotState, UserState clientState, UserState chatState, T dialog, IDataservices dataservices, IStore store)
 
         {
             _conversationState = conversationState;
             _authClientState = clientState.CreateProperty<AuthStateModel>(authUser);
             _authBotState = botState.CreateProperty<AuthStateModel>(authBot);
+            _disponibilidadState = disponibilidad.CreateProperty<DisponibilidadModel>(disponibilidaKey);
             _dataUserState = dataUserState.CreateProperty<UserVerificadoEntity>(dataUser);
             _dataBotState = dataBotState.CreateProperty<UserVerificadoEntity>(dataBot);
             _chatState = chatState.CreateProperty<ChatEntity>(chatSession);
@@ -97,10 +100,14 @@ namespace bibliochat.Bots
                     if (resp.exito)
                     {
                         UserVerificadoEntity _bot = await _dataservices.AuthRepositori.VerificationToken(resp.token);
+                        ConfiguracionEntity _disp = await _dataservices.ConfigRepositori.GetDisponibilidad(resp.token);
                         var authBotState = await _authBotState.GetAsync(turnContext, () => new AuthStateModel());
+                        var disponibilidadState = await _disponibilidadState.GetAsync(turnContext, () => new DisponibilidadModel());
                         var dataBotState = await _dataBotState.GetAsync(turnContext, () => new UserVerificadoEntity());
                         dataBotState.token = _bot.token;
                         dataBotState.usuario = _bot.usuario;
+                        disponibilidadState.disponible = _disp.disponibilidad;
+                        disponibilidadState.solicitudEnviada = false;
 
                         var fraceEntity = await _dataservices.FracesRepositori.Frace("Introduccion", _bot.token);
                         if (fraceEntity != null)

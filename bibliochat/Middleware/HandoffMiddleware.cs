@@ -29,7 +29,9 @@ namespace bibliochat.Middleware
         private const string KeyPermittedAggregationChannels = "PermittedAggregationChannels";
         private const string KeyNoDirectConversationsWithChannels = "NoDirectConversationsWithChannels";
         private readonly IStatePropertyAccessor<AuthStateModel> _userState;
+        private readonly IStatePropertyAccessor<DisponibilidadModel> _disponibilidad;
         private readonly IStatePropertyAccessor<UserVerificadoEntity> _dataUserState;
+        private bool isSend = false;
         public IConfiguration Configuration
         {
             get;
@@ -61,12 +63,13 @@ namespace bibliochat.Middleware
         }
 
 
-        public HandoffMiddleware(IConfiguration configuration, UserState userState, UserState dataUserState)
+        public HandoffMiddleware(IConfiguration configuration, UserState userState, UserState dataUserState,UserState disponibilidadState)
         {
             Configuration = configuration;
             string connectionString = Configuration[KeyAzureTableStorageConnectionString];
             IRoutingDataStore routingDataStore = null;
             _dataUserState = dataUserState.CreateProperty<UserVerificadoEntity>(BibliochatBot<MainDialog>.dataUser);
+            _disponibilidad = disponibilidadState.CreateProperty<DisponibilidadModel>(BibliochatBot<MainDialog>.disponibilidaKey);
             _userState = userState.CreateProperty<AuthStateModel>(BibliochatBot<MainDialog>.authUser);
             if (string.IsNullOrEmpty(connectionString))
             {
@@ -102,6 +105,11 @@ namespace bibliochat.Middleware
         public async Task OnTurnAsync(ITurnContext context, NextDelegate next, CancellationToken ct)
         {
             var userStateData = await _userState.GetAsync(context, () => new AuthStateModel(),ct);
+            var disponoibilidadState = new DisponibilidadModel();
+            if (!isSend) { 
+             disponoibilidadState = await _disponibilidad.GetAsync(context, () => new DisponibilidadModel(), ct);
+	         }
+            var dataUserState = await _dataUserState.GetAsync(context, () => new UserVerificadoEntity(), ct);
             Activity activity = context.Activity;
 
             if (activity.Type is ActivityTypes.Message && userStateData.session != null)
@@ -134,11 +142,13 @@ namespace bibliochat.Middleware
                         // No action was taken by the message router. This means that the user
                         // is not connected (in a 1:1 conversation) with a human
                         // (e.g. customer service agent) yet.
-                        
+
                         // Check for cry for help (agent assistance)
-                        if (!string.IsNullOrWhiteSpace(activity.Text)&& activity.Text.ToLower().Contains("human"))
+                        if (!string.IsNullOrWhiteSpace(activity.Text) && activity.Text.ToLower().Contains("human"))
+                        //if (disponoibilidadState.disponible && !disponoibilidadState.solicitudEnviada && dataUserState.usuario.rol=="Cliente")
                         {
-                            //var dataUserState = await _dataUserState.GetAsync(context, () => new UserVerificadoEntity(), ct);
+                            disponoibilidadState.solicitudEnviada = true;
+                            isSend = true;
                             //activity.From.Properties = JObject.FromObject(dataUserState.usuario);
                             //activity.From.Name = dataUserState.usuario.nombre_completo;
                             //JObject obj = JObject.FromObject(dataUserState.usuario);

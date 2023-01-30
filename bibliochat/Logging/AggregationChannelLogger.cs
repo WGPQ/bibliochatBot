@@ -30,13 +30,13 @@ namespace bibliochat.Logging
             foreach (ConversationReference aggregationChannel in
                 _messageRouter.RoutingDataManager.GetAggregationChannels())
             {
-                ResourceResponse resourceResponse =
-                    await _messageRouter.SendMessageAsync(aggregationChannel, message);
+                //ResourceResponse resourceResponse =
+                //    await _messageRouter.SendMessageAsync(aggregationChannel, message);
 
-                if (resourceResponse != null)
-                {
-                    wasSent = true;
-                }
+                //if (resourceResponse != null)
+                //{
+                //    wasSent = true;
+                //}
             }
 
             if (!wasSent)

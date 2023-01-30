@@ -15,7 +15,7 @@ namespace bibliochat
 {
     public class AdapterWithErrorHandler : CloudAdapter
     {
-        public AdapterWithErrorHandler(BotFrameworkAuthentication auth, IConfiguration configuration, UserState userState, UserState dataUserState, ILogger<IBotFrameworkHttpAdapter> logger)
+        public AdapterWithErrorHandler(BotFrameworkAuthentication auth, IConfiguration configuration, UserState userState, UserState dataUserState, UserState disponibilidadState, ILogger<IBotFrameworkHttpAdapter> logger)
             : base(auth, logger)
         {
             OnTurnError = async (turnContext, exception) =>
@@ -30,7 +30,7 @@ namespace bibliochat
                 // Send a trace activity, which will be displayed in the Bot Framework Emulator
                 await turnContext.TraceActivityAsync("OnTurnError Trace", exception.Message, "https://www.botframework.com/schemas/error", "TurnError");
             };
-            Use(new HandoffMiddleware(configuration,userState, dataUserState));
+            Use(new HandoffMiddleware(configuration,userState, dataUserState, disponibilidadState));
         }
     }
 }

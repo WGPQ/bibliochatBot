@@ -2,7 +2,7 @@
 {
     public class StringConstants
     {
-        public static readonly string NoUserNamePlaceholder = "(no user name)";
+        public static readonly string NoUserNamePlaceholder = "No User";
         public static readonly string NoNameOrId = "(no name or ID)";
 
         public static readonly string LineBreak = "\n\r";
